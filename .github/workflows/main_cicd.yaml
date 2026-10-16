@@ -15,8 +15,8 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v7
 
-      - name: Setup java
-        uses: action/setup-java@v6
+      - name: Java SDK
+        uses: actions/setup-java@v6
         with:
           java-version: '21'
           distribution: temurin
