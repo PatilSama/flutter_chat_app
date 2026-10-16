@@ -15,7 +15,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v7
 
-      - name: Java SDK
+      - name: Setup java
         uses: actions/setup-java@v6
         with:
           java-version: '21'
@@ -33,11 +33,12 @@ jobs:
       - name: Add Dependencies
         run: flutter pub get
 
-      - name: Pod installation
+      - name: Install iOS Dependencies
         run: |
-          cd ios
-          pod install --repo-update
-          cd ..
+            cd ios
+            pod install --repo-update
+            cd ..
+
       - name: Auto format the dart code
         run: dart format .
 
