@@ -1,0 +1,51 @@
+name: Chat App Build Dev
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v7
+
+      - name: Setup java
+        uses: action/setup-java@v6
+        with:
+          java-version: '21'
+          distribution: temurin
+      - run: java --version
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: 3.44.8
+      - name: Clean Dependencies
+        run: flutter clean
+
+      - name: Add Dependencies
+        run: flutter pub get
+
+      - name: Pod installation
+        run: |
+          cd ios
+          pod install --repo-update
+          cd ..
+      - name: Auto format the dart code
+        run: dart format .
+
+      - name: Verify the dart code formated.
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze the dart code.
+        run: flutter analyze --fatal-warnings
+
+      - name: Run test
+        run: flutter test
