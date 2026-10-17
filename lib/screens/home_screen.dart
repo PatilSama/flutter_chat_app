@@ -1,3 +1,5 @@
+import 'package:chatapp/pages/chat_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,7 +27,31 @@ class _HomeScreenState extends State<HomeScreen>
         title: Text("WhatsApp"),
         actions: [
           IconButton(onPressed: () {}, icon: Icon(Icons.search)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (kDebugMode) {
+                print(value);
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                PopupMenuItem(value: 'New Group', child: Text('New Group')),
+                PopupMenuItem(
+                  value: 'New Broadcast',
+                  child: Text('New Broadcast'),
+                ),
+                PopupMenuItem(
+                  value: 'WhatsApp Web',
+                  child: Text('WhatsApp Web'),
+                ),
+                PopupMenuItem(
+                  value: 'Starred Message',
+                  child: Text('Starred Message'),
+                ),
+                PopupMenuItem(value: 'Settings', child: Text('Settings')),
+              ];
+            },
+          ),
         ],
         bottom: TabBar(
           labelColor: Colors.white,
@@ -41,12 +67,7 @@ class _HomeScreenState extends State<HomeScreen>
       ),
       body: TabBarView(
         controller: _controller,
-        children: [
-          Text('CAMERA'),
-          Text('CHATS'),
-          Text('STATUS'),
-          Text('CALLS'),
-        ],
+        children: [Text('CAMERA'), ChatPage(), Text('STATUS'), Text('CALLS')],
       ),
     );
   }
