@@ -27,7 +27,10 @@ class CustomCard extends StatelessWidget {
                 chatModel.isGroup
                     ? "assets/groups_icon.svg"
                     : "assets/person_icon.svg",
-                color: Colors.white,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ),
                 height: 38,
                 width: 38,
               ),

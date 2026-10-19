@@ -16,6 +16,14 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
 
       theme: ThemeData(
+        iconTheme: const IconThemeData(
+          color: Colors.blueGrey,
+        ),
+        iconButtonTheme: IconButtonThemeData(
+          style: IconButton.styleFrom(
+            foregroundColor: ColorConst.accentColor,
+          ),
+        ),
         fontFamily: "OpenSans",
         primaryColor: ColorConst.primaryColor,
         colorScheme: ColorScheme.fromSeed(

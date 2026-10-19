@@ -9,8 +9,8 @@ on:
       - master
 jobs:
   build:
-    runs-on: ubuntu-latest
-
+#    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v7
