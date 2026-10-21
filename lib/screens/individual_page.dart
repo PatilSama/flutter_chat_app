@@ -15,6 +15,8 @@ class IndividualPage extends StatefulWidget {
 }
 
 class _IndividualPageState extends State<IndividualPage> {
+  bool show = false;
+  FocusNode focusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,7 +103,7 @@ class _IndividualPageState extends State<IndividualPage> {
           ),
         ],
       ),
-      body: Container(
+      body: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Stack(
@@ -113,14 +115,19 @@ class _IndividualPageState extends State<IndividualPage> {
                 children: [
                   Row(
                     children: [
-                      Container(
+                      SizedBox(
                         width: MediaQuery.of(context).size.width * .85,
                         child: Card(
-                          margin: EdgeInsets.only(left: 2, right: 2, bottom: 14),
+                          margin: EdgeInsets.only(
+                            left: 2,
+                            right: 2,
+                            bottom: 14,
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25),
                           ),
                           child: TextFormField(
+                            focusNode: focusNode,
                             textAlignVertical: TextAlignVertical.center,
                             keyboardType: TextInputType.multiline,
                             maxLines: 5,
@@ -130,7 +137,11 @@ class _IndividualPageState extends State<IndividualPage> {
                               hintText: "Type a message...",
                               contentPadding: EdgeInsets.all(5),
                               prefixIcon: IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  setState(() {
+                                    show = !show;
+                                  });
+                                },
                                 icon: Icon(Icons.emoji_emotions),
                               ),
                               suffixIcon: Row(
@@ -151,19 +162,23 @@ class _IndividualPageState extends State<IndividualPage> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 14.0,right: 5,left: 2),
+                        padding: const EdgeInsets.only(
+                          bottom: 14.0,
+                          right: 5,
+                          left: 2,
+                        ),
                         child: CircleAvatar(
                           radius: 25,
                           backgroundColor: ColorConst.accentColor,
                           child: IconButton(
                             onPressed: () {},
-                            icon: Icon(Icons.mic,color: Colors.white,),
+                            icon: Icon(Icons.mic, color: Colors.white),
                           ),
                         ),
                       ),
                     ],
                   ),
-                  emojiSelected(),
+                  show ? emojiSelected() : Container(),
                 ],
               ),
             ),
@@ -187,7 +202,8 @@ class _IndividualPageState extends State<IndividualPage> {
         height: 256,
         checkPlatformCompatibility: true,
         emojiViewConfig: EmojiViewConfig(
-          emojiSizeMax: 28 *
+          emojiSizeMax:
+              28 *
               (foundation.defaultTargetPlatform == TargetPlatform.iOS
                   ? 1.2
                   : 1.0),
@@ -205,5 +221,3 @@ class _IndividualPageState extends State<IndividualPage> {
     );
   }
 }
-
-
