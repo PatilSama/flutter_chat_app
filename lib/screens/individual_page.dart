@@ -17,6 +17,21 @@ class IndividualPage extends StatefulWidget {
 class _IndividualPageState extends State<IndividualPage> {
   bool show = false;
   FocusNode focusNode = FocusNode();
+  TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    focusNode.addListener(() {
+      if (focusNode.hasFocus) {
+        setState(() {
+          show = false;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,92 +121,119 @@ class _IndividualPageState extends State<IndividualPage> {
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        child: Stack(
-          children: [
-            ListView(),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * .85,
-                        child: Card(
-                          margin: EdgeInsets.only(
-                            left: 2,
-                            right: 2,
-                            bottom: 14,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          child: TextFormField(
-                            focusNode: focusNode,
-                            textAlignVertical: TextAlignVertical.center,
-                            keyboardType: TextInputType.multiline,
-                            maxLines: 5,
-                            minLines: 1,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Type a message...",
-                              contentPadding: EdgeInsets.all(5),
-                              prefixIcon: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    show = !show;
-                                  });
-                                },
-                                icon: Icon(Icons.emoji_emotions),
-                              ),
-                              suffixIcon: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(Icons.attach_file),
-                                  ),
-                                  IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(Icons.camera_alt),
-                                  ),
-                                ],
+        child: PopScope(
+          canPop: !show,
+          onPopInvokedWithResult: (bool didPop, dynamic result) {
+            if (didPop) return;
+
+            if (show) {
+              setState(() {
+                show = false;
+              });
+            }
+          },
+          child: Stack(
+            children: [
+              ListView(),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * .85,
+                          child: Card(
+                            margin: EdgeInsets.only(
+                              left: 2,
+                              right: 2,
+                              bottom: 14,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            child: TextFormField(
+                              controller: _controller,
+                              focusNode: focusNode,
+                              textAlignVertical: TextAlignVertical.center,
+                              keyboardType: TextInputType.multiline,
+                              maxLines: 5,
+                              minLines: 1,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Type a message...",
+                                contentPadding: EdgeInsets.all(5),
+                                prefixIcon: IconButton(
+                                  onPressed: () {
+                                    focusNode.unfocus();
+                                    focusNode.canRequestFocus = false;
+                                    setState(() {
+                                      show = !show;
+                                    });
+                                  },
+                                  icon: Icon(Icons.emoji_emotions),
+                                ),
+                                suffixIcon: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          builder: (builder) => bottomSheet(),
+                                        );
+                                      },
+                                      icon: Icon(Icons.attach_file),
+                                    ),
+                                    IconButton(
+                                      onPressed: () {},
+                                      icon: Icon(Icons.camera_alt),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: 14.0,
-                          right: 5,
-                          left: 2,
-                        ),
-                        child: CircleAvatar(
-                          radius: 25,
-                          backgroundColor: ColorConst.accentColor,
-                          child: IconButton(
-                            onPressed: () {},
-                            icon: Icon(Icons.mic, color: Colors.white),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 14.0,
+                            right: 5,
+                            left: 2,
+                          ),
+                          child: CircleAvatar(
+                            radius: 25,
+                            backgroundColor: ColorConst.accentColor,
+                            child: IconButton(
+                              onPressed: () {},
+                              icon: Icon(Icons.mic, color: Colors.white),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  show ? emojiSelected() : Container(),
-                ],
+                      ],
+                    ),
+                    show ? emojiSelected() : Container(),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
+  Widget bottomSheet() {
+    return Container();
+  }
+
   Widget emojiSelected() {
     return EmojiPicker(
       onEmojiSelected: (Category? category, Emoji emoji) {
-        // Handle emoji selection if needed
+        setState(() {
+          _controller.text += emoji.emoji;
+        });
       },
       onBackspacePressed: () {
         // Handle backspace if needed
