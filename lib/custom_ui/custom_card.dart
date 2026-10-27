@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomCard extends StatelessWidget {
-  final ChatModel chatModel;
+   final ChatModel? chatModel;
 
   const CustomCard({super.key, required this.chatModel});
 
@@ -24,7 +24,7 @@ class CustomCard extends StatelessWidget {
               radius: 30,
               backgroundColor: Colors.blueGrey,
               child: SvgPicture.asset(
-                chatModel.isGroup
+                chatModel?.isGroup ?? true
                     ? "assets/groups_icon.svg"
                     : "assets/person_icon.svg",
                 colorFilter: const ColorFilter.mode(
@@ -36,17 +36,17 @@ class CustomCard extends StatelessWidget {
               ),
             ),
             title: Text(
-              chatModel.name,
+              chatModel!.name?? '',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             subtitle: Row(
               children: [
                 Icon(Icons.done_all),
                 SizedBox(width: 5),
-                Text(chatModel.currentMessage, style: TextStyle(fontSize: 13)),
+                Text(chatModel?.currentMessage?? '', style: TextStyle(fontSize: 13)),
               ],
             ),
-            trailing: Text(chatModel.time),
+            trailing: Text(chatModel?.time??''),
           ),
           Padding(
             padding: const EdgeInsets.only(right: 20.0, left: 80),

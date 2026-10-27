@@ -1,6 +1,7 @@
 import 'package:chatapp/core/constant/color_const.dart';
 import 'package:chatapp/custom_ui/custom_card.dart';
 import 'package:chatapp/model/ChatModel.dart';
+import 'package:chatapp/screens/select_contact.dart';
 import 'package:flutter/material.dart';
 
 class ChatPage extends StatefulWidget {
@@ -11,7 +12,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  List<ChatModel> chats = [
+  List<ChatModel?> chats = [
     ChatModel(
       name: 'Samadhan',
       icon: 'person_icon.svg',
@@ -49,7 +50,12 @@ class _ChatPageState extends State<ChatPage> {
         foregroundColor: Colors.white,
         backgroundColor: ColorConst.accentColor,
         shape: const CircleBorder(),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => SelectContact()),
+          );
+        },
         child: Icon(Icons.chat),
       ),
       body: ListView.builder(

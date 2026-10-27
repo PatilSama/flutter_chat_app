@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class IndividualPage extends StatefulWidget {
-  final ChatModel chatModel;
+  final ChatModel? chatModel;
 
-  const IndividualPage({super.key, required this.chatModel});
+  const IndividualPage({super.key,  required this.chatModel});
 
   @override
   State<IndividualPage> createState() => _IndividualPageState();
@@ -17,7 +17,7 @@ class IndividualPage extends StatefulWidget {
 class _IndividualPageState extends State<IndividualPage> {
   bool show = false;
   FocusNode focusNode = FocusNode();
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
@@ -50,7 +50,7 @@ class _IndividualPageState extends State<IndividualPage> {
                 radius: 20,
                 backgroundColor: Colors.blueGrey,
                 child: SvgPicture.asset(
-                  widget.chatModel.isGroup
+                  widget.chatModel?.isGroup ?? true
                       ? "assets/groups_icon.svg"
                       : "assets/person_icon.svg",
                   colorFilter: const ColorFilter.mode(
@@ -73,7 +73,7 @@ class _IndividualPageState extends State<IndividualPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.chatModel.name,
+                  widget.chatModel?.name ?? '',
                   style: TextStyle(fontSize: 18.5, fontWeight: FontWeight.bold),
                 ),
                 Text(
@@ -180,6 +180,7 @@ class _IndividualPageState extends State<IndividualPage> {
                                     IconButton(
                                       onPressed: () {
                                         showModalBottomSheet(
+                                          backgroundColor: Colors.transparent,
                                           context: context,
                                           builder: (builder) => bottomSheet(),
                                         );
@@ -225,7 +226,52 @@ class _IndividualPageState extends State<IndividualPage> {
   }
 
   Widget bottomSheet() {
-    return Container();
+    return Container(
+      height: 278,
+      width: MediaQuery.of(context).size.width,
+      child: Card(
+        margin: EdgeInsets.all(18),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                iconCreation(
+                  Icons.insert_drive_file,
+                  Colors.indigo,
+                  "Document",
+                ),
+                iconCreation(Icons.camera_alt, Colors.pink, "Camera"),
+                iconCreation(Icons.insert_photo, Colors.purple, "Gallery"),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                iconCreation(Icons.headset, Colors.orange, "Audio"),
+                iconCreation(Icons.location_pin, Colors.teal, "Location"),
+                iconCreation(Icons.person, Colors.blue, "Contact"),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget iconCreation(IconData icon, Color color, String text) {
+    return Column(
+      children: [
+        CircleAvatar(
+          radius: 30,
+          backgroundColor: color,
+          child: Icon(icon, size: 29, color: Colors.white),
+        ),
+        SizedBox(height: 5),
+        Text(text, style: TextStyle(fontSize: 12)),
+      ],
+    );
   }
 
   Widget emojiSelected() {
