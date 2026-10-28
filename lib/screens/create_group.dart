@@ -1,4 +1,5 @@
 import 'package:chatapp/custom_ui/ContactCard.dart';
+import 'package:chatapp/custom_ui/avatar_card.dart';
 import 'package:chatapp/custom_ui/button_card.dart';
 import 'package:chatapp/model/ChatModel.dart';
 import 'package:flutter/foundation.dart';
@@ -39,26 +40,45 @@ class _CreateGroupState extends State<CreateGroup> {
           IconButton(onPressed: () {}, icon: Icon(Icons.search, size: 26)),
         ],
       ),
-      body: ListView.builder(
-        itemCount: contact.length,
-        itemBuilder: (context, index) {
-          return InkWell(
-            onTap: () {
-              if (contact[index]?.select == false) {
-                setState(() {
-                  contact[index]?.select = true;
-                  groups.add(contact[index]!);
-                });
-              } else {
-                setState(() {
-                  contact[index]?.select = false;
-                  groups.remove(contact[index]);
-                });
-              }
+      body: Stack(
+        children: [
+          ListView.builder(
+            itemCount: contact.length,
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () {
+                  if (contact[index]?.select == false) {
+                    setState(() {
+                      contact[index]?.select = true;
+                      groups.add(contact[index]!);
+                    });
+                  } else {
+                    setState(() {
+                      contact[index]?.select = false;
+                      groups.remove(contact[index]);
+                    });
+                  }
+                },
+                child: ContactCard(contacts: contact[index]),
+              );
             },
-            child: ContactCard(contacts: contact[index]),
-          );
-        },
+          ),
+          Column(
+            children: [
+              Container(
+                height: 75,
+                color: Colors.white,
+                child: ListView.builder(
+                  itemExtent: 60,
+                  itemCount: contact.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index)=>AvatarCard(contests: contact[index],),
+                ),
+              ),
+              Divider(thickness: 1),
+            ],
+          ),
+        ],
       ),
     );
   }
