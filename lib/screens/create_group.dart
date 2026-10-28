@@ -43,41 +43,61 @@ class _CreateGroupState extends State<CreateGroup> {
       body: Stack(
         children: [
           ListView.builder(
-            itemCount: contact.length,
+            itemCount: contact.length+1,
             itemBuilder: (context, index) {
+              if (index == 0) {
+                return Container(height: groups.isNotEmpty ? 90 : 10);
+              }
               return InkWell(
                 onTap: () {
-                  if (contact[index]?.select == false) {
+                  if (contact[index-1]?.select == false) {
                     setState(() {
-                      contact[index]?.select = true;
-                      groups.add(contact[index]!);
+                      contact[index-1]?.select = true;
+                      groups.add(contact[index-1]!);
                     });
                   } else {
                     setState(() {
-                      contact[index]?.select = false;
-                      groups.remove(contact[index]);
+                      contact[index-1]?.select = false;
+                      groups.remove(contact[index-1]);
                     });
                   }
                 },
-                child: ContactCard(contacts: contact[index]),
+                child: ContactCard(contacts: contact[index-1]),
               );
             },
           ),
-          Column(
-            children: [
-              Container(
-                height: 75,
-                color: Colors.white,
-                child: ListView.builder(
-                  itemExtent: 60,
-                  itemCount: contact.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index)=>AvatarCard(contests: contact[index],),
-                ),
-              ),
-              Divider(thickness: 1),
-            ],
-          ),
+          groups.isNotEmpty
+              ? Column(
+                  children: [
+                    Container(
+                      height: 75,
+                      color: Colors.white,
+                      child: ListView.builder(
+                        itemExtent: 60,
+                        itemCount: contact.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          if (contact[index]?.select == true) {
+                            return InkWell(
+                              onTap: () {
+                                setState(() {
+                                  groups.remove(contact[index]);
+                                  contact[index]?.select = false;
+                                });
+                              },
+                              child: AvatarCard(contests: contact[index]),
+                            );
+                          } else {
+                            return Container();
+                          }
+                        },
+                      ),
+                    ),
+
+                    Divider(thickness: 1),
+                  ],
+                )
+              : Container(),
         ],
       ),
     );
