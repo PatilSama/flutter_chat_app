@@ -104,15 +104,16 @@ class _CameraScreenState extends State<CameraScreen> {
     try {
       final XFile image = await _cameraController.takePicture();
 
-      final path = join(
-        (await getTemporaryDirectory()).path,
-        '${DateTime.now().millisecondsSinceEpoch}.png',
+      if (!context.mounted) return;
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => CameraView(path: image.path),
+        ),
       );
 
-      await image.saveTo(path);
-      Navigator.push(context, MaterialPageRoute(builder: (_)=>CameraView()));
-
-      print('Photo saved at: $path');
+      print('Photo saved at: ${image.path}');
     } catch (e) {
       print('Error taking photo: $e');
     }
