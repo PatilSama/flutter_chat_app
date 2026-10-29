@@ -1,8 +1,12 @@
+import 'package:camera/camera.dart';
 import 'package:chatapp/core/constant/color_const.dart';
+import 'package:chatapp/screens/camera_screen.dart';
 import 'package:chatapp/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  cameras = await availableCameras();
   runApp(const MyApp());
 }
 
@@ -16,13 +20,9 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
 
       theme: ThemeData(
-        iconTheme: const IconThemeData(
-          color: Colors.blueGrey,
-        ),
+        iconTheme: const IconThemeData(color: Colors.blueGrey),
         iconButtonTheme: IconButtonThemeData(
-          style: IconButton.styleFrom(
-            foregroundColor: ColorConst.accentColor,
-          ),
+          style: IconButton.styleFrom(foregroundColor: ColorConst.accentColor),
         ),
         fontFamily: "OpenSans",
         primaryColor: ColorConst.primaryColor,

@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 class ContactCard extends StatelessWidget {
   final ChatModel? contacts;
 
-  const ContactCard({super.key, this.contacts});
+  const ContactCard({super.key, required this.contacts});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class ContactCard extends StatelessWidget {
               radius: 23,
               backgroundColor: Colors.blueGrey.shade200,
               child: SvgPicture.asset(
-                "assets/person_icon.svg",
+                contacts?.icon ?? "assets/person_icon.svg",
                 colorFilter: const ColorFilter.mode(
                   Colors.white,
                   BlendMode.srcIn,
@@ -43,10 +43,10 @@ class ContactCard extends StatelessWidget {
         ),
       ),
       title: Text(
-        "Samadhan patil",
+        contacts?.name ?? '',
         style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
       ),
-      subtitle: Text("Flutter Dev", style: TextStyle(fontSize: 13)),
+      subtitle: Text(contacts?.status ?? "", style: TextStyle(fontSize: 13)),
     );
   }
 }
