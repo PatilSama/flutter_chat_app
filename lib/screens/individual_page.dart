@@ -5,10 +5,12 @@ import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../core/constant/image_const.dart';
+
 class IndividualPage extends StatefulWidget {
   final ChatModel? chatModel;
 
-  const IndividualPage({super.key,  required this.chatModel});
+  const IndividualPage({super.key, required this.chatModel});
 
   @override
   State<IndividualPage> createState() => _IndividualPageState();
@@ -34,194 +36,209 @@ class _IndividualPageState extends State<IndividualPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leadingWidth: 70,
-        titleSpacing: 0,
-        leading: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.arrow_back, size: 24),
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: Colors.blueGrey,
-                child: SvgPicture.asset(
-                  widget.chatModel?.isGroup ?? true
-                      ? "assets/groups_icon.svg"
-                      : "assets/person_icon.svg",
-                  colorFilter: const ColorFilter.mode(
-                    Colors.white,
-                    BlendMode.srcIn,
-                  ),
-                  height: 30,
-                  width: 30,
-                ),
-              ),
-            ],
-          ),
+    return Stack(
+      children: [
+        Image.asset(
+          whatsappBack,
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
         ),
-        title: InkWell(
-          onTap: () {},
-          child: Container(
-            margin: EdgeInsets.all(6),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.chatModel?.name ?? '',
-                  style: TextStyle(fontSize: 18.5, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  "Last seen today at 12:10",
-                  style: TextStyle(fontSize: 13),
-                ),
-              ],
-            ),
-          ),
-        ),
-        actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.videocam)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.call)),
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              if (foundation.kDebugMode) {
-                print(value);
-              }
-            },
-            itemBuilder: (BuildContext context) {
-              return [
-                PopupMenuItem(
-                  value: 'View Contact',
-                  child: Text('View Contact'),
-                ),
-                PopupMenuItem(
-                  value: 'Media, links, and docs',
-                  child: Text('Media, links, and docs'),
-                ),
-                PopupMenuItem(
-                  value: 'WhatsApp Web',
-                  child: Text('WhatsApp Web'),
-                ),
-                PopupMenuItem(value: 'Search', child: Text('Search')),
-                PopupMenuItem(
-                  value: 'Mute Notification',
-                  child: Text('Mute Notification'),
-                ),
-                PopupMenuItem(value: 'Wallpaper', child: Text('Wallpaper')),
-              ];
-            },
-          ),
-        ],
-      ),
-      body: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: PopScope(
-          canPop: !show,
-          onPopInvokedWithResult: (bool didPop, dynamic result) {
-            if (didPop) return;
-
-            if (show) {
-              setState(() {
-                show = false;
-              });
-            }
-          },
-          child: Stack(
-            children: [
-              ListView(),
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * .85,
-                          child: Card(
-                            margin: EdgeInsets.only(
-                              left: 2,
-                              right: 2,
-                              bottom: 14,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            child: TextFormField(
-                              controller: _controller,
-                              focusNode: focusNode,
-                              textAlignVertical: TextAlignVertical.center,
-                              keyboardType: TextInputType.multiline,
-                              maxLines: 5,
-                              minLines: 1,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Type a message...",
-                                contentPadding: EdgeInsets.all(5),
-                                prefixIcon: IconButton(
-                                  onPressed: () {
-                                    focusNode.unfocus();
-                                    focusNode.canRequestFocus = false;
-                                    setState(() {
-                                      show = !show;
-                                    });
-                                  },
-                                  icon: Icon(Icons.emoji_emotions),
-                                ),
-                                suffixIcon: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      onPressed: () {
-                                        showModalBottomSheet(
-                                          backgroundColor: Colors.transparent,
-                                          context: context,
-                                          builder: (builder) => bottomSheet(),
-                                        );
-                                      },
-                                      icon: Icon(Icons.attach_file),
-                                    ),
-                                    IconButton(
-                                      onPressed: () {},
-                                      icon: Icon(Icons.camera_alt),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: 14.0,
-                            right: 5,
-                            left: 2,
-                          ),
-                          child: CircleAvatar(
-                            radius: 25,
-                            backgroundColor: ColorConst.accentColor,
-                            child: IconButton(
-                              onPressed: () {},
-                              icon: Icon(Icons.mic, color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ],
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            leadingWidth: 70,
+            titleSpacing: 0,
+            leading: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.arrow_back, size: 24),
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Colors.blueGrey,
+                    child: SvgPicture.asset(
+                      widget.chatModel?.isGroup ?? true
+                          ? "assets/groups_icon.svg"
+                          : "assets/person_icon.svg",
+                      colorFilter: const ColorFilter.mode(
+                        Colors.white,
+                        BlendMode.srcIn,
+                      ),
+                      height: 30,
+                      width: 30,
                     ),
-                    show ? emojiSelected() : Container(),
+                  ),
+                ],
+              ),
+            ),
+            title: InkWell(
+              onTap: () {},
+              child: Container(
+                margin: EdgeInsets.all(6),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.chatModel?.name ?? '',
+                      style: TextStyle(
+                        fontSize: 18.5,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "Last seen today at 12:10",
+                      style: TextStyle(fontSize: 13),
+                    ),
                   ],
                 ),
               ),
+            ),
+            actions: [
+              IconButton(onPressed: () {}, icon: Icon(Icons.videocam)),
+              IconButton(onPressed: () {}, icon: Icon(Icons.call)),
+              PopupMenuButton<String>(
+                onSelected: (value) {
+                  if (foundation.kDebugMode) {
+                    print(value);
+                  }
+                },
+                itemBuilder: (BuildContext context) {
+                  return [
+                    PopupMenuItem(
+                      value: 'View Contact',
+                      child: Text('View Contact'),
+                    ),
+                    PopupMenuItem(
+                      value: 'Media, links, and docs',
+                      child: Text('Media, links, and docs'),
+                    ),
+                    PopupMenuItem(
+                      value: 'WhatsApp Web',
+                      child: Text('WhatsApp Web'),
+                    ),
+                    PopupMenuItem(value: 'Search', child: Text('Search')),
+                    PopupMenuItem(
+                      value: 'Mute Notification',
+                      child: Text('Mute Notification'),
+                    ),
+                    PopupMenuItem(value: 'Wallpaper', child: Text('Wallpaper')),
+                  ];
+                },
+              ),
             ],
           ),
+          body: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: PopScope(
+              canPop: !show,
+              onPopInvokedWithResult: (bool didPop, dynamic result) {
+                if (didPop) return;
+
+                if (show) {
+                  setState(() {
+                    show = false;
+                  });
+                }
+              },
+              child: Stack(
+                children: [
+                  ListView(),
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * .85,
+                              child: Card(
+                                margin: EdgeInsets.only(
+                                  left: 2,
+                                  right: 2,
+                                  bottom: 14,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                ),
+                                child: TextFormField(
+                                  controller: _controller,
+                                  focusNode: focusNode,
+                                  textAlignVertical: TextAlignVertical.center,
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: 5,
+                                  minLines: 1,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: "Type a message...",
+                                    contentPadding: EdgeInsets.all(5),
+                                    prefixIcon: IconButton(
+                                      onPressed: () {
+                                        focusNode.unfocus();
+                                        focusNode.canRequestFocus = false;
+                                        setState(() {
+                                          show = !show;
+                                        });
+                                      },
+                                      icon: Icon(Icons.emoji_emotions),
+                                    ),
+                                    suffixIcon: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {
+                                            showModalBottomSheet(
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              context: context,
+                                              builder: (builder) =>
+                                                  bottomSheet(),
+                                            );
+                                          },
+                                          icon: Icon(Icons.attach_file),
+                                        ),
+                                        IconButton(
+                                          onPressed: () {},
+                                          icon: Icon(Icons.camera_alt),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: 14.0,
+                                right: 5,
+                                left: 2,
+                              ),
+                              child: CircleAvatar(
+                                radius: 25,
+                                backgroundColor: ColorConst.accentColor,
+                                child: IconButton(
+                                  onPressed: () {},
+                                  icon: Icon(Icons.mic, color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        show ? emojiSelected() : Container(),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 

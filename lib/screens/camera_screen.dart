@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:camera/camera.dart';
 import 'package:chatapp/screens/camera_view.dart';
+import 'package:chatapp/screens/video_view.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -16,6 +19,11 @@ class CameraScreen extends StatefulWidget {
 class _CameraScreenState extends State<CameraScreen> {
   late CameraController _cameraController;
   late Future<void> cameraValue;
+  bool isRecording = false;
+  String videoPath = "";
+  bool flash = false;
+  bool isCameraFront = true;
+  double transform  = pi;
 
   @override
   void initState() {
@@ -41,7 +49,11 @@ class _CameraScreenState extends State<CameraScreen> {
             future: cameraValue,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                return CameraPreview(_cameraController);
+                return SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  child: CameraPreview(_cameraController),
+                );
               } else {
                 return Center(child: CircularProgressIndicator());
               }
@@ -59,29 +71,109 @@ class _CameraScreenState extends State<CameraScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       IconButton(
-                        onPressed: () {},
-                        icon: Icon(
-                          Icons.flash_off,
-                          color: Colors.white,
-                          size: 28,
-                        ),
-                      ),
-                      IconButton(
                         onPressed: () {
-                          takePhoto(context);
+                          setState(() {
+                            flash = !flash;
+                          });
+                          flash
+                              ? _cameraController.setFlashMode(FlashMode.torch)
+                              : _cameraController.setFlashMode(FlashMode.off);
                         },
                         icon: Icon(
-                          Icons.panorama_fish_eye,
-                          color: Colors.white,
-                          size: 70,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(
-                          Icons.flip_camera_ios,
+                          flash ? Icons.flash_on : Icons.flash_off,
                           color: Colors.white,
                           size: 28,
+                        ),
+                      ),
+
+                      GestureDetector(
+                        onLongPress: () async {
+                          try {
+                            if (!_cameraController.value.isInitialized ||
+                                _cameraController.value.isRecordingVideo) {
+                              return;
+                            }
+
+                            await _cameraController.startVideoRecording();
+
+                            if (!mounted) return;
+
+                            setState(() {
+                              isRecording = true;
+                            });
+                          } catch (e) {
+                            debugPrint('Error starting video recording: $e');
+                          }
+                        },
+
+                        onLongPressUp: () async {
+                          try {
+                            if (!_cameraController.value.isRecordingVideo) {
+                              return;
+                            }
+
+                            final XFile videoFile = await _cameraController
+                                .stopVideoRecording();
+
+                            if (!mounted) return;
+
+                            setState(() {
+                              isRecording = false;
+                              videoPath = videoFile.path;
+                            });
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => VideoView(path: videoFile.path),
+                              ),
+                            );
+                          } catch (e) {
+                            debugPrint('Error stopping video recording: $e');
+
+                            if (mounted) {
+                              setState(() {
+                                isRecording = false;
+                              });
+                            }
+                          }
+                        },
+
+                        onTap: () {
+                          if (!isRecording) {
+                            takePhoto(context);
+                          }
+                        },
+
+                        child: Icon(
+                          isRecording
+                              ? Icons.radio_button_on
+                              : Icons.panorama_fish_eye,
+                          color: isRecording ? Colors.red : Colors.white,
+                          size: isRecording ? 80 : 70,
+                        ),
+                      ),
+
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isCameraFront = !isCameraFront;
+                            transform = transform+pi;
+                          });
+                          int cameraPos = isCameraFront ? 0 : 1;
+                          _cameraController = CameraController(
+                            cameras![cameraPos]!,
+                            ResolutionPreset.high,
+                          );
+                          cameraValue = _cameraController.initialize();
+                        },
+                        icon: Transform.rotate(
+                          angle: transform,
+                          child: Icon(
+                            Icons.flip_camera_ios,
+                            color: Colors.white,
+                            size: 28,
+                          ),
                         ),
                       ),
                     ],
@@ -108,9 +200,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (_) => CameraView(path: image.path),
-        ),
+        MaterialPageRoute(builder: (_) => CameraView(path: image.path)),
       );
 
       print('Photo saved at: ${image.path}');
