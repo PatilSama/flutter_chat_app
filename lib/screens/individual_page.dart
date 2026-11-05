@@ -1,4 +1,8 @@
+import 'dart:io' as IO;
+
 import 'package:chatapp/core/constant/color_const.dart';
+import 'package:chatapp/custom_ui/own_message_card.dart';
+import 'package:chatapp/custom_ui/reply_card.dart';
 import 'package:chatapp/model/ChatModel.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/foundation.dart' as foundation;
@@ -20,6 +24,7 @@ class _IndividualPageState extends State<IndividualPage> {
   bool show = false;
   FocusNode focusNode = FocusNode();
   final TextEditingController _controller = TextEditingController();
+  late IO.Socket socket;
 
   @override
   void initState() {
@@ -42,6 +47,7 @@ class _IndividualPageState extends State<IndividualPage> {
           whatsappBack,
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
+          fit: BoxFit.cover,
         ),
         Scaffold(
           backgroundColor: Colors.transparent,
@@ -147,7 +153,10 @@ class _IndividualPageState extends State<IndividualPage> {
               },
               child: Stack(
                 children: [
-                  ListView(),
+                  ListView(
+                    shrinkWrap: true,
+                    children: [OwnMessageCard(), ReplyCard()],
+                  ),
                   Align(
                     alignment: Alignment.bottomLeft,
                     child: Column(
